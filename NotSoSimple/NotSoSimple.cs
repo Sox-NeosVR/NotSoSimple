@@ -54,7 +54,16 @@ namespace NotSoSimple
 
         static void AddProtections(Slot slot)
         {
-            if (config.GetValue(Savent)) slot.AttachComponent<ChildrenSaveBlocker>().Persistent = false;
+            if (config.GetValue(Savent))
+            {
+                var Ligma = slot.AttachComponent<ValueUserOverride<bool>>();
+                Ligma.Persistent = false;
+                var Balls = slot.AttachComponent<ChildrenSaveBlocker>();
+                Balls.Persistent = false;
+                Ligma.Target.Value = Balls.EnabledField.ReferenceID;
+                Ligma.Default.Value = true;
+                Ligma.SetOverride(slot.LocalUser, false);
+            }
             if (config.GetValue(Equipnt))
             {
                 var Ligma = slot.AttachComponent<ValueUserOverride<bool>>();
@@ -82,36 +91,14 @@ namespace NotSoSimple
         {
             [HarmonyPrefix]
             [HarmonyPatch("OnSaving")]
-            static bool OnSaving(SaveControl control, ChildrenSaveBlocker __instance)
+            static bool OnSaving(ChildrenSaveBlocker __instance)
             {
-                foreach (CloudUserRef user in users)
-                {
-                    if (user.UserId == __instance.LocalUser.UserID) return false;
-                }
-                control.OnBeforeSaveStart(delegate
-                {
-                    List<Slot> markPersistent = Pool.BorrowList<Slot>();
-                    foreach (Slot child in __instance.Slot.Children)
-                    {
-                        if (child.PersistentSelf)
-                        {
-                            markPersistent.Add(child);
-                            child.PersistentSelf = false;
-                        }
-                    }
+                if (__instance.EnabledField == true)
+                    return true;
+                else if (__instance.EnabledField == false)
+                    return false;
 
-                    control.OnSaved(delegate
-                    {
-                        foreach (Slot item in markPersistent)
-                        {
-                            item.PersistentSelf = true;
-                        }
-
-                        Pool.Return(ref markPersistent);
-                    });
-                });
-
-                return false;
+                return true;
             }
         }
     }
