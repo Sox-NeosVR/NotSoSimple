@@ -11,7 +11,7 @@ namespace NotSoSimple
     {
         public override string Name => "NotSoSimple";
         public override string Author => "Sox & LeCloutPanda";
-        public override string Version => "1.0.0";
+        public override string Version => "1.2.0";
 
         public static ModConfiguration config;
         private static List<CloudUserRef> users = new List<CloudUserRef>();
@@ -43,8 +43,6 @@ namespace NotSoSimple
                 {
                     if (___User.UserId == __instance.LocalUser.UserID)
                     {
-                        users.Add(___User);
-                        Slot slot = __instance.Slot;
                         AddProtections(__instance.Slot);
                     }
                 });
