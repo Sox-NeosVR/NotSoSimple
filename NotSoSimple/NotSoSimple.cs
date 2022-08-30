@@ -14,7 +14,6 @@ namespace NotSoSimple
         public override string Version => "1.2.0";
 
         public static ModConfiguration config;
-        private static List<CloudUserRef> users = new List<CloudUserRef>();
 
         [AutoRegisterConfigKey]
         private static ModConfigurationKey<bool> Savent = new ModConfigurationKey<bool>("Savent", "Prevent others being able to save protected items.", () => true);
